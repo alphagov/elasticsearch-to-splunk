@@ -1,21 +1,27 @@
-# logit-to-splunk
+# elasticsearch-to-splunk
 
-Go utility to ship logs from Logit to Splunk.
+Go utility to ship logs from Elasticsearch to Splunk.
+
+With special support for [logit.io](https://logit.io).
 
 ## Usage
 
 ### Source
 
-Use `--logit-es-url` or the `LOGIT_ES_URL` environment variable to configure
-the Logit Elasticsearch source. Should be in the format
+Use `--es-url` or the `ES_URL` environment variable to configure
+the Elasticsearch source. Should be in the format
 `https://ffffffff-ffff-ffff-ffff-ffffffffffff-es.logit.io`.
 
-Use `--logit-es-key` or the `LOGIT_ES_KEY` environment variable to configure
-the Logit Elasticsearch API key. Should be in the format
+Use `--logit-api-key` or the `LOGIT_API_KEY` environment variable to configure
+the (Logit specific) Elasticsearch API key. Should be in the format
 `ffffffff-ffff-ffff-ffff-ffffffffffff`.
 
-These variables can be found on the Elasticsearch page within a Logit stack's
-settings. 
+Use `--basic-auth-username` or the `BASIC_AUTH_USERNAME` environment variable
+to configure HTTP basic authentication, along with `--basic-auth-password`
+(`BASIC_AUTH_PASSWORD`).
+
+For Logit Elasticsearch, these variables are available on the Elasticsearch
+page within a Logit stack's settings.
 
 ### Destination
 

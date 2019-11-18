@@ -1,32 +1,31 @@
 package main
 
 import (
-	"log"
 	"sync"
 
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
-	logitURL = kingpin.Flag(
-		"logit-es-url",
-		"Logit Elasticsearch URL",
-	).Required().Envar("LOGIT_ES_URL").String()
+	elasticsearchURL = kingpin.Flag(
+		"es-url",
+		"Elasticsearch URL",
+	).Required().Envar("ES_URL").String()
 
-	logitKey = kingpin.Flag(
-		"logit-es-key",
+	logitAPIKey = kingpin.Flag(
+		"logit-api-key",
 		"Logit Elasticsearch API Key",
-	).Envar("LOGIT_ES_KEY").String()
+	).Envar("LOGIT_API_KEY").String()
 
-	logitUser = kingpin.Flag(
-		"logit-es-user",
-		"Logit Elasticsearch Username",
-	).Envar("LOGIT_ES_USERNAME").String()
+	basicAuthUsername = kingpin.Flag(
+		"basic-auth-username",
+		"Username for HTTP basic auth",
+	).Envar("BASIC_AUTH_USERNAME").String()
 
-	logitPassword = kingpin.Flag(
-		"logit-es-password",
-		"Logit Elasticsearch Password",
-	).Envar("LOGIT_ES_PASSWORD").String()
+	basicAuthPassword = kingpin.Flag(
+		"basic-auth-password",
+		"Password for HTTP basic auth",
+	).Envar("BASIC_AUTH_PASSWORD").String()
 
 	splunkURL = kingpin.Flag(
 		"splunk-url",
@@ -52,16 +51,17 @@ var (
 func main() {
 	kingpin.Parse()
 
-	if *logitKey == "" && *logitUser == "" {
-		log.Fatalf("You must supply --logit-es-key or --logit-es-user")
-	}
-
 	collectLogs := make(chan []byte, 1024)
 	shipLogs := make(chan []byte, 1024)
 
 	collector := Collector{
-		LogitURL:      *logitURL,
-		LogitKey:      *logitKey,
+		ElasticsearchURL: *elasticsearchURL,
+
+		LogitAPIKey: *logitAPIKey,
+
+		BasicAuthUsername: *basicAuthUsername,
+		BasicAuthPassword: *basicAuthPassword,
+
 		SearchCadence: *searchCadence,
 		SearchJson:    *searchJson,
 		Destination:   collectLogs,
