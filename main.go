@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"sync"
 
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -15,7 +16,17 @@ var (
 	logitKey = kingpin.Flag(
 		"logit-es-key",
 		"Logit Elasticsearch API Key",
-	).Required().Envar("LOGIT_ES_KEY").String()
+	).Default("\000").Envar("LOGIT_ES_KEY").String()
+
+	logitUser = kingpin.Flag(
+		"logit-es-user",
+		"Logit Elasticsearch Username",
+	).Default("\000").Envar("LOGIT_ES_USERNAME").String()
+
+	logitPassword = kingpin.Flag(
+		"logit-es-password",
+		"Logit Elasticsearch Password",
+	).Default("\000").Envar("LOGIT_ES_PASSWORD").String()
 
 	splunkURL = kingpin.Flag(
 		"splunk-url",
@@ -40,6 +51,10 @@ var (
 
 func main() {
 	kingpin.Parse()
+
+	if *logitKey == "\000" && *logitUser == "\000" {
+		log.Fatalf("You must supply logitKey or logitUser")
+	}
 
 	collectLogs := make(chan []byte, 1024)
 	shipLogs := make(chan []byte, 1024)

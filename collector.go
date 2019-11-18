@@ -16,6 +16,8 @@ type Collector struct {
 
 	LogitURL      string
 	LogitKey      string
+	LogitUser     string
+	LogitPassword string
 	SearchJson    string
 	SearchCadence int
 
@@ -23,11 +25,17 @@ type Collector struct {
 }
 
 type LogitTransport struct {
-	apiKey string
+	apiKey   string
+	username string
+	password string
 }
 
 func (t *LogitTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-	r.Header.Set("Apikey", t.apiKey)
+	if t.apiKey != "\000" {
+		r.Header.Set("Apikey", t.apiKey)
+	} else {
+		r.SetBasicAuth(t.username, t.password)
+	}
 	return http.DefaultTransport.RoundTrip(r)
 }
 
@@ -36,7 +44,7 @@ func (c *Collector) Collect() {
 	defer ticker.Stop()
 
 	httpClient := &http.Client{}
-	httpClient.Transport = &LogitTransport{apiKey: c.LogitKey}
+	httpClient.Transport = &LogitTransport{apiKey: c.LogitKey, username: c.LogitUser, password: c.LogitPassword}
 
 	elasticSearch, err := elastic.NewClient(
 		elastic.SetURL(c.LogitURL),
