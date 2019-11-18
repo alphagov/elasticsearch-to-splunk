@@ -7,15 +7,25 @@ import (
 )
 
 var (
-	logitURL = kingpin.Flag(
-		"logit-es-url",
-		"Logit Elasticsearch URL",
-	).Required().Envar("LOGIT_ES_URL").String()
+	elasticsearchURL = kingpin.Flag(
+		"es-url",
+		"Elasticsearch URL",
+	).Required().Envar("ES_URL").String()
 
-	logitKey = kingpin.Flag(
-		"logit-es-key",
+	logitAPIKey = kingpin.Flag(
+		"logit-api-key",
 		"Logit Elasticsearch API Key",
-	).Required().Envar("LOGIT_ES_KEY").String()
+	).Envar("LOGIT_API_KEY").String()
+
+	basicAuthUsername = kingpin.Flag(
+		"basic-auth-username",
+		"Username for HTTP basic auth",
+	).Envar("BASIC_AUTH_USERNAME").String()
+
+	basicAuthPassword = kingpin.Flag(
+		"basic-auth-password",
+		"Password for HTTP basic auth",
+	).Envar("BASIC_AUTH_PASSWORD").String()
 
 	splunkURL = kingpin.Flag(
 		"splunk-url",
@@ -45,8 +55,13 @@ func main() {
 	shipLogs := make(chan []byte, 1024)
 
 	collector := Collector{
-		LogitURL:      *logitURL,
-		LogitKey:      *logitKey,
+		ElasticsearchURL: *elasticsearchURL,
+
+		LogitAPIKey: *logitAPIKey,
+
+		BasicAuthUsername: *basicAuthUsername,
+		BasicAuthPassword: *basicAuthPassword,
+
 		SearchCadence: *searchCadence,
 		SearchJson:    *searchJson,
 		Destination:   collectLogs,
