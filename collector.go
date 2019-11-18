@@ -31,7 +31,7 @@ type LogitTransport struct {
 }
 
 func (t *LogitTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-	if t.apiKey != "\000" {
+	if t.apiKey != "" {
 		r.Header.Set("Apikey", t.apiKey)
 	} else {
 		r.SetBasicAuth(t.username, t.password)

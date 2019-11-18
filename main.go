@@ -16,17 +16,17 @@ var (
 	logitKey = kingpin.Flag(
 		"logit-es-key",
 		"Logit Elasticsearch API Key",
-	).Default("\000").Envar("LOGIT_ES_KEY").String()
+	).Envar("LOGIT_ES_KEY").String()
 
 	logitUser = kingpin.Flag(
 		"logit-es-user",
 		"Logit Elasticsearch Username",
-	).Default("\000").Envar("LOGIT_ES_USERNAME").String()
+	).Envar("LOGIT_ES_USERNAME").String()
 
 	logitPassword = kingpin.Flag(
 		"logit-es-password",
 		"Logit Elasticsearch Password",
-	).Default("\000").Envar("LOGIT_ES_PASSWORD").String()
+	).Envar("LOGIT_ES_PASSWORD").String()
 
 	splunkURL = kingpin.Flag(
 		"splunk-url",
@@ -52,8 +52,8 @@ var (
 func main() {
 	kingpin.Parse()
 
-	if *logitKey == "\000" && *logitUser == "\000" {
-		log.Fatalf("You must supply logitKey or logitUser")
+	if *logitKey == "" && *logitUser == "" {
+		log.Fatalf("You must supply --logit-es-key or --logit-es-user")
 	}
 
 	collectLogs := make(chan []byte, 1024)
