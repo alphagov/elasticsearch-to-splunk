@@ -51,7 +51,7 @@ func (s *Shipper) Ship() {
 		case msg := <-s.Source:
 
 			splunkMsg := fmt.Sprintf(
-				`{"source": "logit-to-splunk", "event": %s}`,
+				`{"source": "elasticsearch-to-splunk", "event": %s}`,
 				msg,
 			)
 
